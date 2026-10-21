@@ -1,0 +1,179 @@
+---
+title: "Dataset Exploration"
+format: html
+editor: visual
+---
+
+````{=html}
+<!-- ```{r}
+install.packages("knitr")
+install.packages("rmarkdown")
+install.packages("ggplot2")
+install.packages("dplyr")
+``` -->
+````
+
+## Library Imports
+
+```{r}
+library(stringr)
+library(ggplot2)
+library(dplyr)
+```
+
+## Dataset Description
+
+The dataset was independently collected from the ÖSKB Results Service using an API interface and subsequently preprocessed. It contains detailed information about male and female players competing in the national leagues, as well as their scores over the past four years, including information about when and where the games took place.
+
+## Loading and Preprocessing the Dataset
+
+```{r}
+data <- read.csv("player_games_joined.csv", stringsAsFactors=TRUE)
+data <- data %>%
+  mutate(heim = ifelse(heim == "True", TRUE, FALSE)) %>%
+  mutate(datum = as.Date(datum, format="%Y-%m-%d")) %>%
+  filter(
+    # remove extreme outliers (probably coming from players giving up mid game)
+    kegel > quantile(kegel, 0.001, na.rm = TRUE) - 1.5 * IQR(kegel, na.rm = TRUE)
+  )
+```
+
+## Dataset Overview
+
+```{r}
+head(data)
+```
+
+```{r}
+cat("Number of rows:", nrow(data), "\nNumber of columns:", ncol(data))
+```
+
+## Comparison of Leagues
+
+```{r}
+national_leagues <- data %>%
+  filter(str_detect(liga, "SL|BL"))
+
+ggplot(national_leagues, aes(x = liga, y = kegel, fill = geschlecht)) +
+  geom_boxplot() +
+  labs(x="Liga", y="Scores", fill="Geschlecht")
+```
+
+```{r}
+ggplot(national_leagues, aes(x = liga, y = kegel, fill = geschlecht)) +
+  geom_violin() +
+  labs(x="Liga", y="Scores", fill="Geschlecht")
+```
+
+```{r}
+herren <- national_leagues %>%
+  filter(geschlecht == "m")
+
+ggplot(herren, aes(x = kegel, fill = liga)) +
+  geom_density(alpha = 0.5) +
+  labs(x = "Scores", y = "Density", fill = "Liga")
+```
+
+## Performance Trends of Individual Players
+
+```{r}
+female_2002 <- data %>%
+  filter(geschlecht=="w") %>%
+  filter(jahrgang == 2002)
+
+ggplot(female_2002, aes(x = datum, y = kegel, color=name)) +
+  geom_smooth(se=TRUE, method = "loess", span=0.9) +
+  labs(x = "Date", y = "Score", color = "Spielerin")
+```
+
+## Comparison of Individual Players
+
+```{r}
+sl_damen = data %>%
+  filter(liga == "SL Damen") %>%
+  filter(jahrgang == 2002) %>%
+  filter(land == "AUT") %>%
+  filter(datum >= "2024-08-01")
+
+ggplot(sl_damen, aes(x = kegel, fill = name)) +
+  geom_density(alpha = 0.5) +
+  labs(x = "Scores", y = "Density", fill = "Spielerin")
+```
+
+```{r}
+ggplot(sl_damen, aes(x = name, y = kegel)) +
+  geom_boxplot() +
+  labs(x="Spielerin", y="Scores")
+```
+
+```{r}
+ggplot(sl_damen, aes(x = name, y = kegel)) +
+  geom_violin() +
+  labs(x="Spielerin", y="Scores")
+```
+
+## Comparison of Individual Lanes
+
+```{r}
+lanes_sl_damen = data %>%
+  filter(liga == "SL Damen") %>%
+  filter(datum >= "2024-08-01")
+
+ggplot(lanes_sl_damen, aes(x = bahn, y = kegel)) +
+  geom_boxplot() +
+  labs( x = "Bahn", y = "Score") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+```{r}
+ggplot(lanes_sl_damen, aes(x = bahn, y = kegel)) +
+  geom_violin() +
+  labs( x = "Bahn", y = "Score") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## Comparison of Home and Away Teams by Lane
+
+```{r}
+heatmap_data <- lanes_sl_damen %>%
+  mutate(heim = ifelse(heim, "Heim", "Auswärts")) %>%
+  group_by(bahn, heim) %>%
+  summarise(avg_kegel = mean(kegel, na.rm = TRUE))
+
+ggplot(heatmap_data, aes(x=bahn, y=heim, fill=avg_kegel)) +
+  geom_tile() +
+  geom_text(aes(label = round(avg_kegel, 0))) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Bahn", y= "Mannschaft", fill="Average Score")
+```
+
+## Age Distribution
+
+```{r}
+
+ggplot(data, aes(x=jahrgang)) +
+  geom_density()
+```
+
+## Age vs. Average Score by Gender
+
+```{r}
+avg_score_spieler <- data %>% 
+  filter(datum >= "2024-08-01") %>% 
+  group_by(spieler_id) %>%
+  summarize(
+    avg_kegel = mean(kegel, na.rm = TRUE),
+    jahrgang = first(jahrgang),
+    geschlecht = first(geschlecht)
+  )
+
+ggplot(avg_score_spieler, aes(x=jahrgang, y=avg_kegel, color=geschlecht)) +
+  geom_point() +
+  geom_smooth() +
+  theme_minimal() +
+  scale_x_continuous(breaks= seq(1940, 2015, by=5)) +
+  labs( x = "Jahrgang", y = "Average Score", color="Geschlecht")
+```

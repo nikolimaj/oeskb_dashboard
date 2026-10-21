@@ -1,0 +1,17 @@
+# R session files
+.RData
+.Rhistory
+.Rproj.user/
+*renv/
+
+
+.idea/
+.venv/
+
+alte_daten/
+parsed_data/*
+
+!parsed_data/game_data_latest.csv
+!parsed_data/game_data_previous.csv
+
+*.json
