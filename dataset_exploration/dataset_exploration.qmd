@@ -28,7 +28,8 @@ The dataset was independently collected from the ÖSKB Results Service using an 
 ## Loading and Preprocessing the Dataset
 
 ```{r}
-data <- read.csv("player_games_joined.csv", stringsAsFactors=TRUE)
+data <- read.csv("https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data/game_data_latest.csv", row.names = NULL, stringsAsFactors=TRUE)
+
 data <- data %>%
   mutate(heim = ifelse(heim == "True", TRUE, FALSE)) %>%
   mutate(datum = as.Date(datum, format="%Y-%m-%d")) %>%

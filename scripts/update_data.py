@@ -1,6 +1,7 @@
 from datetime import datetime
 import pandas as pd
 import requests
+from pathlib import Path
 
 base_url = "https://firestore.googleapis.com/v1/projects/oeskb-app/databases/(default)/documents/saisonen/"
 
@@ -143,8 +144,12 @@ player_games = pd.merge(all_games, all_players, on='spieler_id', how='left')
 player_games = player_games.drop_duplicates(subset=['spieler_id', 'spiel_id'])
 
 
-# append previous season data to current season data
-previous_season = pd.read_csv("parsed_data/game_data_previous.csv")
+# Read the previous season data from GitHub
+previous_url = f"https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data/game_data_previous.csv"
+previous_season = pd.read_csv(previous_url)
+
+# Append previous season data to current season data
 player_games = pd.concat([previous_season, player_games], ignore_index=True)
 
-player_games.to_csv("parsed_data/game_data_latest.csv", index=False)
+# Save locally
+player_games.to_csv(Path("parsed_data/game_data_latest.csv"), index=False)

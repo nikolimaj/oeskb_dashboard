@@ -3,7 +3,7 @@ import requests
 
 base_url = "https://firestore.googleapis.com/v1/projects/oeskb-app/databases/(default)/documents/saisonen/"
 
-seasons = ["2021_2022", "2022_2023", "2023_2024", "2024_2025", "2025_2026", "2026_2027"]
+seasons = ["2021_2022", "2022_2023", "2023_2024", "2024_2025", "2025_2026"]
 
 
 leagues  = {
@@ -140,9 +140,7 @@ for season in seasons:
         except Exception as e:
             print(f"Error processing {season} - {league}: {e}")
 
-# all_games.to_csv("games.csv", index=False)
 all_players = all_players.drop_duplicates()
-# all_players.to_csv("players.csv", index=False)
 
 # join games and players data
 player_games = pd.merge(all_games, all_players, on='spieler_id', how='left')
@@ -150,4 +148,4 @@ player_games = pd.merge(all_games, all_players, on='spieler_id', how='left')
 # drop duplicates
 player_games = player_games.drop_duplicates(subset=['spieler_id', 'spiel_id'])
 
-player_games.to_csv("parsed_data/player_games_joined.csv", index=False)
+player_games.to_csv("https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data/game_data_previous.csv", index=False)

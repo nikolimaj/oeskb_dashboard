@@ -1,11 +1,12 @@
+import pandas as pd
 from pathlib import Path
-import shutil
 
-base_dir = Path(__file__).resolve().parents[1]
+base_url = "https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data"
 
-input_file = base_dir / "parsed_data" / "game_data_latest.csv"
-output_file = base_dir / "parsed_data" / "game_data_previous.csv"
+input_file = f"{base_url}/game_data_latest.csv"
+output_file = Path("parsed_data/game_data_previous.csv")
 
 output_file.parent.mkdir(parents=True, exist_ok=True)
 
-shutil.copy(input_file, output_file)
+df = pd.read_csv(input_file)
+df.to_csv(output_file, index=False)

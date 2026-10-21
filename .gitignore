@@ -3,7 +3,7 @@
 .Rhistory
 .Rproj.user/
 *renv/
-
+.quarto
 
 .idea/
 .venv/

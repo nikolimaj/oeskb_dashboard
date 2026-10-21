@@ -109,7 +109,6 @@ install.packages("knitr")
 install.packages("rmarkdown")
 install.packages("ggplot2")
 install.packages("dplyr")
-
 ``` -->
 <section id="library-imports" class="level2">
 <h2 class="anchored" data-anchor-id="library-imports">Library Imports</h2>
@@ -140,20 +139,15 @@ Attaching package: 'dplyr'</code></pre>
 <section id="loading-and-preprocessing-the-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="loading-and-preprocessing-the-dataset">Loading and Preprocessing the Dataset</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># games &lt;- read.csv("all_games.csv", stringsAsFactors=TRUE)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># players &lt;- read.csv("all_players.csv", stringsAsFactors=TRUE)</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># data &lt;- games %&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   left_join(players, by = "spieler_id")</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"player_games_joined.csv"</span>, <span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">heim =</span> <span class="fu">ifelse</span>(heim <span class="sc">==</span> <span class="st">"True"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">datum =</span> <span class="fu">as.Date</span>(datum, <span class="at">format=</span><span class="st">"%Y-%m-%d"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remove extreme outliers (probably coming from players giving up mid game)</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    kegel <span class="sc">&gt;</span> <span class="fu">quantile</span>(kegel, <span class="fl">0.001</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> <span class="fu">IQR</span>(kegel, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data/game_data_latest.csv"</span>, <span class="at">row.names =</span> <span class="cn">NULL</span>, <span class="at">stringsAsFactors=</span><span class="cn">TRUE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">heim =</span> <span class="fu">ifelse</span>(heim <span class="sc">==</span> <span class="st">"True"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">datum =</span> <span class="fu">as.Date</span>(datum, <span class="at">format=</span><span class="st">"%Y-%m-%d"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># remove extreme outliers (probably coming from players giving up mid game)</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    kegel <span class="sc">&gt;</span> <span class="fu">quantile</span>(kegel, <span class="fl">0.001</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fl">1.5</span> <span class="sc">*</span> <span class="fu">IQR</span>(kegel, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="dataset-overview" class="level2">
@@ -161,33 +155,33 @@ Attaching package: 'dplyr'</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            spieler_id             spiel_id kegel  sp mp heim startbahn dg
-1 c05Wj8GpOVWhxXgLRXIu zCjMpotkyNuKSI5Uvt27   610 4.0  1 TRUE         1  1
-2 6QbEVujH4PLBpdGAOZVi zCjMpotkyNuKSI5Uvt27   583 4.0  1 TRUE         3  1
-3 fta996CaW1i1aAqyVwLs zCjMpotkyNuKSI5Uvt27   611 1.5  0 TRUE         1  3
-4 17lmnumvnSY2aO6rvjVo zCjMpotkyNuKSI5Uvt27   528 3.0  1 TRUE         3  2
-5 PRoHOk9BueR7f7GXyXMe zCjMpotkyNuKSI5Uvt27   596 3.0  1 TRUE         3  3
-6 NFLZe6r36p8cVThzhi4h zCjMpotkyNuKSI5Uvt27   623 3.5  1 TRUE         1  2
-       datum uhrzeit     bahn     liga             name jahrgang land
-1 2021-12-04   11:00 ASKÖ SKZ SL Damen    NGUYEN Monika     1982  AUT
-2 2021-12-04   11:00 ASKÖ SKZ SL Damen    STEINER Fiona     1994  AUT
-3 2021-12-04   11:00 ASKÖ SKZ SL Damen        SAJKO Eva     1985  SLO
-4 2021-12-04   11:00 ASKÖ SKZ SL Damen BIZJAK Patricija     1995  SLO
-5 2021-12-04   11:00 ASKÖ SKZ SL Damen  LENGAUER Monika     1964  AUT
-6 2021-12-04   11:00 ASKÖ SKZ SL Damen      HUBER Julia     1994  AUT
+<pre><code>            spieler_id             spiel_id kegel sp mp heim startbahn dg
+1 sfE1aYgXo4Dzyzic5Bc2 NYskl398ykThHMXFjgQS   507  1  0 TRUE         1  1
+2 WQgQkQvsnqxWl9FbYSLw NYskl398ykThHMXFjgQS   494  1  0 TRUE         3  2
+3 4VFNP62IjavGQwMyMHMP NYskl398ykThHMXFjgQS   573  4  1 TRUE         1  3
+4 pjNw2kHn208eeXIgNadv NYskl398ykThHMXFjgQS   536  2  0 TRUE         1  2
+5 FiD1cqbIRHXjngAXvU9D NYskl398ykThHMXFjgQS   453  1  0 TRUE         3  3
+6 Alu2SfPu9Cz5zfb7PMWf NYskl398ykThHMXFjgQS   583  3  1 TRUE         3  1
+       datum uhrzeit           bahn     liga                name jahrgang land
+1 2021-10-17   11:00 VSE Sportplatz SL Damen       VECEROVA Anna     2003  CZE
+2 2021-10-17   11:00 VSE Sportplatz SL Damen    KAPFINGER Romana     1960  AUT
+3 2021-10-17   11:00 VSE Sportplatz SL Damen   FUTSCHEK Caroline     2000  AUT
+4 2021-10-17   11:00 VSE Sportplatz SL Damen   LAIBACHER Vanessa     1994  AUT
+5 2021-10-17   11:00 VSE Sportplatz SL Damen TABERNIK Heidemarie     1950  AUT
+6 2021-10-17   11:00 VSE Sportplatz SL Damen      SCHWINGER Lisa     1998  AUT
   passnummer geschlecht
-1     136100          w
-2     136135          w
-3     136130          w
-4     136071          w
-5     136145          w
-6     136274          w</code></pre>
+1     136008          w
+2     136133          w
+3     136091          w
+4     136024          w
+5     136143          w
+6     136046          w</code></pre>
 </div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of rows:"</span>, <span class="fu">nrow</span>(data), <span class="st">"</span><span class="sc">\n</span><span class="st">Number of columns:"</span>, <span class="fu">ncol</span>(data))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Number of rows: 47014 
+<pre><code>Number of rows: 30496 
 Number of columns: 17</code></pre>
 </div>
 </div>
@@ -375,7 +369,7 @@ Number of columns: 17</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x=</span>jahrgang)) <span class="sc">+</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 78 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 14 rows containing non-finite outside the scale range
 (`stat_density()`).</code></pre>
 </div>
 <div class="cell-output-display">

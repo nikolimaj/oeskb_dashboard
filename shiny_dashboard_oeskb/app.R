@@ -3,7 +3,7 @@ library(ggplot2)
 library(dplyr)
 
 # Load Data and Preprocess
-data <- read.csv("player_games_joined.csv", stringsAsFactors=TRUE)
+data <- read.csv("https://raw.githubusercontent.com/nikolimaj/oeskb_dashboard/master/parsed_data/game_data_latest.csv", row.names = NULL, stringsAsFactors=TRUE)
 
 names(data) <- paste0(
   toupper(substr(names(data), 1, 1)),
